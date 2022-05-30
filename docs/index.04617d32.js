@@ -142,14 +142,14 @@
       this[globalName] = mainExports;
     }
   }
-})({"5C4RD":[function(require,module,exports) {
+})({"qvyOU":[function(require,module,exports) {
 "use strict";
 var global = arguments[3];
 var HMR_HOST = null;
 var HMR_PORT = null;
 var HMR_SECURE = false;
 var HMR_ENV_HASH = "d6ea1d42532a7575";
-module.bundle.HMR_BUNDLE_ID = "a7523702901f85c2";
+module.bundle.HMR_BUNDLE_ID = "e878c90b04617d32";
 /* global HMR_HOST, HMR_PORT, HMR_ENV_HASH, HMR_SECURE, chrome, browser, importScripts */ /*::
 import type {
   HMRAsset,
@@ -502,98 +502,85 @@ function hmrAcceptRun(bundle, id) {
     acceptedAssets[id] = true;
 }
 
-},{}],"edeGs":[function(require,module,exports) {
+},{}],"TyEjs":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Game", ()=>Game);
 var _pixiJs = require("pixi.js");
-var _dogPng = require("./images/dog.png");
-//import { Block } from "./Block"
+var _bubblePng = require("./images/bubble.png");
+var _bubblePngDefault = parcelHelpers.interopDefault(_bubblePng);
 var _backgroundJpg = require("./images/background.jpg");
-//import { Bullet } from "./Bullet"
-//import { UI } from "./UI"
-//import { Explosion } from "./Explosion"
-var _assetLoader = require("./AssetLoader");
+var _backgroundJpgDefault = parcelHelpers.interopDefault(_backgroundJpg);
+var _catPng = require("./images/cat.png");
+var _catPngDefault = parcelHelpers.interopDefault(_catPng);
+var _mouse = require("./Mouse");
+var _cat = require("./Cat");
 class Game {
+    mice = [];
     constructor(){
-        const container = document.getElementById("container");
+        console.log("Game !");
+        //
+        // STAP 1 - maak een pixi canvas
+        //
         this.pixi = new _pixiJs.Application({
-            width: 900,
-            height: 500
+            width: window.innerWidth,
+            height: window.innerHeight,
+            forceCanvas: true
         });
-        container.appendChild(this.pixi.view);
-        console.log("starting to load");
-        this.assetLoader = new (0, _assetLoader.AssetLoader)(this);
+        document.body.appendChild(this.pixi.view);
+        //
+        // STAP 2 - preload alle afbeeldingen
+        //
+        this.loader = new _pixiJs.Loader();
+        this.loader.add("mouseTexture", (0, _bubblePngDefault.default)).add("backgroundTexture", (0, _backgroundJpgDefault.default)).add("catTexture", (0, _catPngDefault.default));
+        this.loader.load(()=>this.loadCompleted());
     }
-    doneLoading() {
-        // create the explosion animation frames
-        //this.createExplosionFrames()
-        // build the stage
-        this.createScene();
-        // crt effect filter on top of scene
-        this.createDisplacementFilter();
-    }
-    createScene() {
-        // container to put a filter on
-        this.container = new _pixiJs.Container;
-        this.pixi.stage.addChild(this.container);
-        // add tiling bg
-        this.bg = new (0, _backgroundJpg.Background)(this.assetLoader.resources["background"].texture, this.pixi.screen.width, this.pixi.screen.height);
-        this.container.addChild(this.bg);
-        /*
-        // add some blocks
-        for (let i = 0; i < 10; i++) {
-            let b = new Block(this.assetLoader.resources["block"].texture!, this)
-            this.blocks.push(b)
-            this.container.addChild(b)
+    //
+    // STAP 3 - maak een sprite als de afbeeldingen zijn geladen
+    //
+    loadCompleted() {
+        // first load background
+        let background = new _pixiJs.Sprite(this.loader.resources["backgroundTexture"].texture);
+        background.scale.set(window.innerWidth / background.getBounds().width, window.innerHeight / background.getBounds().height);
+        this.pixi.stage.addChild(background);
+        for(let i = 0; i < 10; i++){
+            let mouse = new (0, _mouse.Mouse)(this.loader.resources["mouseTexture"].texture, this);
+            this.mice.push(mouse);
+            this.pixi.stage.addChild(mouse);
         }
-*/ // create a cat
-        this.cat = new (0, _dogPng.Cat)(this.assetLoader.resources["cat"].texture, this);
-        this.container.addChild(this.cat);
-        /*
-        // create a UI
-        this.ui = new UI(this)
-        */ // scanlines effect outside of the container
-        let scans = new _pixiJs.TilingSprite(this.assetLoader.resources["scanTexture"].texture, 900, 500);
-        this.pixi.stage.addChild(scans);
-        scans.blendMode = _pixiJs.BLEND_MODES.MULTIPLY;
-        scans.alpha = 0.3;
-        scans.tileScale.set(0.5);
-        // start update loop
+        // create Shark
+        this.cat = new (0, _cat.Cat)(this.loader.resources["catTexture"].texture, this);
+        this.pixi.stage.addChild(this.cat);
         this.pixi.ticker.add((delta)=>this.update(delta));
     }
-    // filter to create a fake crt monitor effect
-    createDisplacementFilter() {
-        this.displacementSprite = _pixiJs.Sprite.from(this.assetLoader.resources["waveTexture"].texture);
-        this.displacementSprite.texture.baseTexture.wrapMode = _pixiJs.WRAP_MODES.REPEAT;
-        const displacementFilter = new _pixiJs.filters.DisplacementFilter(this.displacementSprite);
-        this.container.addChild(this.displacementSprite);
-        this.container.filters = [
-            displacementFilter
-        ];
-        displacementFilter.scale.y = 10;
-    }
     update(delta) {
-        // move filter
-        this.displacementSprite.y -= 2;
-        if (this.displacementSprite.y < -this.displacementSprite.height) this.displacementSprite.y = 0;
-        // update game elements
-        this.bg.update();
         this.cat.update();
-    /*
-        for (let block of this.blocks) {
-            block.update()
+        for (const mouse of this.mice){
+            mouse.update(delta);
+            if (this.collision(this.cat, mouse)) // console.log("CAT ATTACK!!!!");
+            this.pixi.stage.removeChild(mouse);
         }
-
-        for (let bullet of this.bullets) {
-            bullet.update()
-        }*/ // check collisions
-    //this.checkCollisions()
+        // when the Cat is the only survivor
+        if (this.pixi.stage.children.filter((object)=>object instanceof (0, _mouse.Mouse)).length === 0) {
+            console.log("YOU WIN");
+            let text = new _pixiJs.Text("You WIN!!", {
+                fill: [
+                    "#ffffff"
+                ]
+            });
+            text.x = this.pixi.screen.width / 2;
+            text.y = this.pixi.screen.height / 2;
+            this.pixi.stage.addChild(text);
+        }
+    }
+    collision(sprite1, sprite2) {
+        const bounds1 = sprite1.getBounds();
+        const bounds2 = sprite2.getBounds();
+        return bounds1.x < bounds2.x + bounds2.width && bounds1.x + bounds1.width > bounds2.x && bounds1.y < bounds2.y + bounds2.height && bounds1.y + bounds1.height > bounds2.y;
     }
 }
-new Game();
 
-},{"pixi.js":"dsYej","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./AssetLoader":"8VDU2","./images/background.jpg":"1wZMB","./images/dog.png":"im07i"}],"dsYej":[function(require,module,exports) {
+},{"pixi.js":"dsYej","./images/bubble.png":"kGn0Z","./images/background.jpg":"2Zvk9","./images/cat.png":"jdo30","./Mouse":"jFu21","./Cat":"ijiA1","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"dsYej":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "utils", ()=>_utils);
@@ -36860,52 +36847,8 @@ function __extends(d, b) {
     return AnimatedSprite1;
 }((0, _sprite.Sprite));
 
-},{"@pixi/core":"7PEF8","@pixi/sprite":"9mbxh","@pixi/ticker":"8ekG7","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"8VDU2":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-//import monitorImage from "../images/wave.png"
-//import scanImage from "../images/scanlines.png"
-parcelHelpers.export(exports, "AssetLoader", ()=>AssetLoader);
-var _pixiJs = require("pixi.js");
-var _catPng = require("./images/cat.png");
-var _catPngDefault = parcelHelpers.interopDefault(_catPng);
-//import bulletImage from "../images/bullet.png"
-//import blockImage from "../images/block3.png"
-var _backgroundJpg = require("./images/background.jpg");
-var _backgroundJpgDefault = parcelHelpers.interopDefault(_backgroundJpg);
-class AssetLoader extends _pixiJs.Loader {
-    constructor(game){
-        super();
-        this.game = game;
-        this.graphics = new _pixiJs.Graphics();
-        game.pixi.stage.addChild(this.graphics);
-        this.add("cat", (0, _catPngDefault.default)).add("background", (0, _backgroundJpgDefault.default))//.add("bullet", bulletImage)
-        //.add("block", blockImage)
-        //.add("scanTexture", scanImage)
-        //.add("waveTexture", monitorImage)
-        .add("spritesheet", "explosion.json");
-        this.onProgress.add((loader)=>this.showProgress(loader));
-        this.onError.add((arg)=>{
-            console.error(arg);
-        });
-        this.load(()=>{
-            this.graphics.destroy();
-            game.doneLoading();
-        });
-    }
-    showProgress(loader) {
-        console.log(`Loading ${loader.progress}%`);
-        let offset = 50;
-        let barWidth = (this.game.pixi.screen.width - offset * 2) * (loader.progress / 100);
-        this.graphics.clear();
-        this.graphics.beginFill(0x32DE49);
-        this.graphics.drawRect(offset, this.game.pixi.screen.height / 2 - 20, barWidth, 40);
-        this.graphics.endFill();
-    }
-}
-
-},{"pixi.js":"dsYej","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./images/cat.png":"gwQm7","./images/background.jpg":"1wZMB"}],"gwQm7":[function(require,module,exports) {
-module.exports = require("./helpers/bundle-url").getBundleURL("emE5o") + "cat.3425c517.png" + "?" + Date.now();
+},{"@pixi/core":"7PEF8","@pixi/sprite":"9mbxh","@pixi/ticker":"8ekG7","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"kGn0Z":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("jXrpa") + "bubble.56ab0ad6.png" + "?" + Date.now();
 
 },{"./helpers/bundle-url":"lgJ39"}],"lgJ39":[function(require,module,exports) {
 "use strict";
@@ -36941,12 +36884,78 @@ exports.getBundleURL = getBundleURLCached;
 exports.getBaseURL = getBaseURL;
 exports.getOrigin = getOrigin;
 
-},{}],"1wZMB":[function(require,module,exports) {
-module.exports = require("./helpers/bundle-url").getBundleURL("emE5o") + "background.527e578f.jpg" + "?" + Date.now();
+},{}],"2Zvk9":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("jXrpa") + "background.527e578f.jpg" + "?" + Date.now();
 
-},{"./helpers/bundle-url":"lgJ39"}],"im07i":[function(require,module,exports) {
-module.exports = require("./helpers/bundle-url").getBundleURL("emE5o") + "dog.b550a564.png" + "?" + Date.now();
+},{"./helpers/bundle-url":"lgJ39"}],"jdo30":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("jXrpa") + "cat.3425c517.png" + "?" + Date.now();
 
-},{"./helpers/bundle-url":"lgJ39"}]},["5C4RD","edeGs"], "edeGs", "parcelRequirea0e5")
+},{"./helpers/bundle-url":"lgJ39"}],"jFu21":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Mouse", ()=>Mouse);
+var _pixiJs = require("pixi.js");
+class Mouse extends _pixiJs.Sprite {
+    speed = 0;
+    constructor(texture, game){
+        super(texture);
+        this.game = game;
+        this.speed = Math.random() * 6 + 1;
+        this.x = Math.random() * game.pixi.screen.right;
+        this.y = Math.random() * game.pixi.screen.bottom;
+        this.tint = Math.random() * 0xffffff;
+        this.scale.set(-1, 1);
+        this.interactive = true;
+        this.on("pointerdown", ()=>this.onClick());
+    }
+    onClick() {
+        console.log("Click");
+        this.game.pixi.stage.removeChild(this);
+    }
+    update(delta) {
+        this.x += this.speed * delta;
+        this.y += Math.sin(this.x * 0.02) * 2;
+        this.keepInScreen();
+    }
+    keepInScreen() {
+        if (this.getBounds().left > this.game.pixi.screen.right) this.x = -this.getBounds().width;
+    }
+}
 
-//# sourceMappingURL=index.901f85c2.js.map
+},{"pixi.js":"dsYej","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"ijiA1":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Cat", ()=>Cat);
+var _pixiJs = require("pixi.js");
+class Cat extends _pixiJs.Sprite {
+    speed = 0;
+    constructor(texture, game){
+        super(texture);
+        this.game = game;
+        console.log("cat created");
+        this.x = game.pixi.screen.width - this.getBounds().width;
+        this.y = Math.random() * game.pixi.screen.height;
+        this.scale.set(-1, 1);
+        window.addEventListener("keydown", (e)=>this.onKeyDown(e));
+        window.addEventListener("keyup", (e)=>this.onKeyUp(e));
+    }
+    onKeyDown(e) {
+        if (e.key === "ArrowUp") this.speed = -5;
+        if (e.key === "ArrowDown") this.speed = 5;
+    }
+    onKeyUp(e) {
+        if (e.key === "ArrowUp" || e.key === "ArrowDown") this.speed = 0;
+    }
+    update() {
+        this.x -= 4;
+        this.y += this.speed;
+        this.keepInScreen();
+    }
+    keepInScreen() {
+        if (this.getBounds().right < this.game.pixi.screen.left) this.x = this.game.pixi.screen.right;
+    }
+}
+
+},{"pixi.js":"dsYej","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["qvyOU","TyEjs"], "TyEjs", "parcelRequirea0e5")
+
+//# sourceMappingURL=index.04617d32.js.map

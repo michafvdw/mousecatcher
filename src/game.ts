@@ -1,122 +1,97 @@
-//const app = new PIXI.Application();
-//document.body.appendChild(app.view);
-
-import * as PIXI from "pixi.js"
-import catImage from "./images/cat.png"
-import mouseImage from "./images/bubble.png"
-import dogImage from "./images/dog.png"
-import bgImage from "./images/background.jpg"
-
-//const texture = PIXI.Texture.from('./images/cat.png');
-
+import * as PIXI from "pixi.js";
+import mouseImage from "./images/mouse.png";
+import backgroundImage from "./images/background.jpg";
+import catImage from "./images/cat.png";
+import { Mouse } from "./Mouse";
+import { Cat } from "./Cat";
 
 export class Game {
+  pixi: PIXI.Application;
+  mice: Mouse[] = [];
+  loader: PIXI.Loader;
+  cat: Cat;
+  constructor() {
+    console.log("Game !");
+    //
+    // STAP 1 - maak een pixi canvas
+    //
+    this.pixi = new PIXI.Application({
+      width: window.innerWidth,
+      height: window.innerHeight,
+      forceCanvas: true
+    });
+    document.body.appendChild(this.pixi.view);
 
-    pixi: PIXI.Application
-    bgImage:PIXI.Sprite
-    cat:PIXI.Sprite
-    anotherCat:PIXI.Sprite
+    //
+    // STAP 2 - preload alle afbeeldingen
+    //
+    this.loader = new PIXI.Loader();
+    this.loader
+      .add("mouseTexture",mouseImage)
+      .add("backgroundTexture", backgroundImage)
+      .add("catTexture", catImage);
+    this.loader.load(() => this.loadCompleted());
+  }
+  //
+  // STAP 3 - maak een sprite als de afbeeldingen zijn geladen
+  //
+  loadCompleted() {
+    // first load background
+    let background = new PIXI.Sprite(
+      this.loader.resources["backgroundTexture"].texture!
+    );
+    background.scale.set(
+      window.innerWidth / background.getBounds().width,
+      window.innerHeight / background.getBounds().height
+    );
+    this.pixi.stage.addChild(background);
 
-    dog:PIXI.Sprite
-    anotherDog:PIXI.Sprite
-
-    mouse:PIXI.Sprite
-    anotherMouse:PIXI.Sprite
-
-
-
-    constructor() {
-        this.pixi = new PIXI.Application({ backgroundColor: bgImage, width: 900, height: 500 })
-        document.body.appendChild(this.pixi.view)
-        
-        this.pixi.loader
-            .add("catTexture", catImage)
-            .add("dogTexture", dogImage)
-            .add("mouseTexture", mouseImage)
-            .add("backgroundTexture", bgImage)
-
-        this.pixi.loader.load(() => this.doneLoading())
-
+    for (let i = 0; i < 10; i++) {
+      let mouse = new Mouse(this.loader.resources["mouseTexture"].texture!, this);
+      this.mice.push(mouse);
+      this.pixi.stage.addChild(mouse);
     }
 
-    doneLoading() {
-        console.log("all textures loaded!")
+    // create Shark
+    this.cat = new Cat(
+      this.loader.resources["catTexture"].texture!,
+      this
+    );
+    this.pixi.stage.addChild(this.cat);
 
-        
-        this.bgImage = new PIXI.Sprite(this.pixi.loader.resources["backgroundTexture"].texture!)
-        this.bgImage.tint = Math.random() * 0xFFFFFF;
-        this.bgImage.x = 900;
-        this.bgImage.y =500;
-        this.pixi.stage.addChild(this.bgImage)
-
-        //this.cat.tint = Math.random() * 0xFFFFFF;
-        //this.cat.x = Math.random() * screen.width;
-        //this.cat.y = Math.random() * screen.height;
-        this.cat = new PIXI.Sprite(this.pixi.loader.resources["catTexture"].texture!)
-        this.cat.tint = Math.random() * 0xFFFFFF;
-        this.cat.x = Math.random() * screen.width;
-        this.cat.y = Math.random() * screen.height;
-        this.pixi.stage.addChild(this.cat)
-
-        
-        //this.anothercat.tint = Math.random() * 0xFFFFFF;
-        //this.anothercat.x = Math.random() * screen.width;
-        //this.anothercat.y = Math.random() * screen.height;
-        this.anotherCat = new PIXI.Sprite(this.pixi.loader.resources["catTexture"].texture!)
-        this.anotherCat.tint = Math.random() * 0xFFFFFF;
-        this.anotherCat.x = Math.random() * screen.width;
-        this.anotherCat.y = Math.random() * screen.height;
-        this.pixi.stage.addChild(this.anotherCat)
-
-        this.dog = new PIXI.Sprite(this.pixi.loader.resources["dogTexture"].texture!)
-        this.dog.tint = Math.random() * 0xFFFFFF;
-        this.dog.x = Math.random() * screen.width;
-        this.dog.y = Math.random() * screen.height;
-        this.pixi.stage.addChild(this.dog)
-
-        
-        //this.anothercat.tint = Math.random() * 0xFFFFFF;
-        //this.anothercat.x = Math.random() * screen.width;
-        //this.anothercat.y = Math.random() * screen.height;
-        this.anotherDog = new PIXI.Sprite(this.pixi.loader.resources["dogTexture"].texture!)
-        this.anotherDog.tint = Math.random() * 0xFFFFFF;
-        this.anotherDog.x = Math.random() * screen.width;
-        this.anotherDog.y = Math.random() * screen.height;
-        this.pixi.stage.addChild(this.anotherDog)
-
-        this.mouse = new PIXI.Sprite(this.pixi.loader.resources["mouseTexture"].texture!)
-        this.mouse.tint = Math.random() * 0xFFFFFF;
-        this.mouse.x = Math.random() * screen.width;
-        this.mouse.y = Math.random() * screen.height;
-        this.pixi.stage.addChild(this.mouse)
-        
-        //this.anotherCat.tint = Math.random() * 0xFFFFFF;
-        //this.anotherCat.x = Math.random() * screen.width;
-        //this.anotherCat.y = Math.random() * screen.height;
-        this.anotherMouse = new PIXI.Sprite(this.pixi.loader.resources["mouseTexture"].texture!)
-        this.anotherMouse.tint = Math.random() * 0xFFFFFF;
-        this.anotherMouse.x = Math.random() * screen.width;
-        this.anotherMouse.y = Math.random() * screen.height;
-        this.pixi.stage.addChild(this.anotherMouse)
-        
-
-
-        this.pixi.ticker.add((delta) => this.update(delta))
-
-        
+    this.pixi.ticker.add((delta: number) => this.update(delta));
+  }
+  update(delta: number) {
+    this.cat.update();
+    for (const mouse of this.mice) {
+      mouse.update(delta);
+      if (this.collision(this.cat, mouse)) {
+        // console.log("CAT ATTACK!!!!");
+        this.pixi.stage.removeChild(mouse);
+      }
     }
-
-    update(delta : number) {
-
-        this.cat.x -= 2
-        this.anotherCat.x -= 3
-
-        this.dog.x -= 2
-        this.anotherDog.x -= 3
-
-        this.mouse.x -= 4
-        this.anotherMouse.x -= 5
+    // when the Cat is the only survivor
+    if (
+      this.pixi.stage.children.filter((object) => object instanceof Mouse)
+        .length === 0
+    ) {
+      console.log("YOU WIN");
+      let text = new PIXI.Text("You WIN!!", { fill: ["#ffffff"] });
+      text.x = this.pixi.screen.width / 2;
+      text.y = this.pixi.screen.height / 2;
+      this.pixi.stage.addChild(text);
     }
+  }
+
+  collision(sprite1: PIXI.Sprite, sprite2: PIXI.Sprite) {
+    const bounds1 = sprite1.getBounds();
+    const bounds2 = sprite2.getBounds();
+
+    return (
+      bounds1.x < bounds2.x + bounds2.width &&
+      bounds1.x + bounds1.width > bounds2.x &&
+      bounds1.y < bounds2.y + bounds2.height &&
+      bounds1.y + bounds1.height > bounds2.y
+    );
+  }
 }
-
-new Game()
