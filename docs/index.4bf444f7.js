@@ -518,10 +518,14 @@ var _backgroundJpg = require("./images/background.jpg");
 var _backgroundJpgDefault = parcelHelpers.interopDefault(_backgroundJpg);
 var _catPng = require("./images/cat.png");
 var _catPngDefault = parcelHelpers.interopDefault(_catPng);
+var _dogPng = require("./images/dog.png");
+var _dogPngDefault = parcelHelpers.interopDefault(_dogPng);
 var _mouse = require("./Mouse");
 var _cat = require("./Cat");
+var _dog = require("./Dog");
 class Game {
     mice = [];
+    dogs = [];
     constructor(){
         console.log("Game !");
         //
@@ -537,7 +541,7 @@ class Game {
         // STAP 2 - preload alle afbeeldingen
         //
         this.loader = new _pixiJs.Loader();
-        this.loader.add("mouseTexture", (0, _mousePngDefault.default)).add("backgroundTexture", (0, _backgroundJpgDefault.default)).add("catTexture", (0, _catPngDefault.default));
+        this.loader.add("mouseTexture", (0, _mousePngDefault.default)).add("dogTexture", (0, _dogPngDefault.default)).add("backgroundTexture", (0, _backgroundJpgDefault.default)).add("catTexture", (0, _catPngDefault.default));
         this.loader.load(()=>this.loadCompleted());
     }
     //
@@ -548,12 +552,19 @@ class Game {
         let background = new _pixiJs.Sprite(this.loader.resources["backgroundTexture"].texture);
         background.scale.set(window.innerWidth / background.getBounds().width, window.innerHeight / background.getBounds().height);
         this.pixi.stage.addChild(background);
+        // create mice
         for(let i = 0; i < 10; i++){
             let mouse = new (0, _mouse.Mouse)(this.loader.resources["mouseTexture"].texture, this);
             this.mice.push(mouse);
             this.pixi.stage.addChild(mouse);
         }
-        // create Shark
+        // create mice
+        for(let i1 = 0; i1 < 1; i1++){
+            let dog = new (0, _dog.Dog)(this.loader.resources["dogTexture"].texture, this);
+            this.dogs.push(dog);
+            this.pixi.stage.addChild(dog);
+        }
+        // create cat
         this.cat = new (0, _cat.Cat)(this.loader.resources["catTexture"].texture, this);
         this.pixi.stage.addChild(this.cat);
         this.pixi.ticker.add((delta)=>this.update(delta));
@@ -565,10 +576,27 @@ class Game {
             if (this.collision(this.cat, mouse)) // console.log("CAT ATTACK!!!!");
             this.pixi.stage.removeChild(mouse);
         }
+        for (const dog of this.dogs){
+            dog.update(delta);
+            if (this.collision(this.cat, dog)) // console.log("CAT ATTACK!!!!");
+            this.pixi.stage.removeChild(this.cat);
+        }
         // when the Cat is the only survivor
-        if (this.pixi.stage.children.filter((object)=>object instanceof (0, _mouse.Mouse)).length === 0) {
+        if (this.pixi.stage.children.filter((object)=>object instanceof (0, _mouse.Mouse)).length === 0 && this.pixi.stage.children.filter((object)=>object instanceof (0, _cat.Cat)).length === 1) {
             console.log("YOU WIN");
             let text = new _pixiJs.Text("You WIN!!", {
+                fill: [
+                    "#ffffff"
+                ]
+            });
+            text.x = this.pixi.screen.width / 2;
+            text.y = this.pixi.screen.height / 2;
+            this.pixi.stage.addChild(text);
+        }
+        // when the Cat is the only survivor
+        if (this.pixi.stage.children.filter((object)=>object instanceof (0, _dog.Dog)).length === 1 && this.pixi.stage.children.filter((object)=>object instanceof (0, _cat.Cat)).length === 0) {
+            console.log("YOU LOSE");
+            let text = new _pixiJs.Text("You LOSE!!", {
                 fill: [
                     "#ffffff"
                 ]
@@ -585,7 +613,7 @@ class Game {
     }
 }
 
-},{"pixi.js":"dsYej","./images/mouse.png":"57yax","./images/background.jpg":"kLq7u","./images/cat.png":"hNhHq","./Mouse":"jFu21","./Cat":"ijiA1","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"dsYej":[function(require,module,exports) {
+},{"pixi.js":"dsYej","./images/mouse.png":"57yax","./images/background.jpg":"kLq7u","./images/cat.png":"hNhHq","./images/dog.png":"awsn2","./Mouse":"jFu21","./Cat":"ijiA1","./Dog":"7mNrH","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"dsYej":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "utils", ()=>_utils);
@@ -36895,6 +36923,9 @@ module.exports = require("./helpers/bundle-url").getBundleURL("jcCUn") + "backgr
 },{"./helpers/bundle-url":"lgJ39"}],"hNhHq":[function(require,module,exports) {
 module.exports = require("./helpers/bundle-url").getBundleURL("jcCUn") + "cat.3425c517.png" + "?" + Date.now();
 
+},{"./helpers/bundle-url":"lgJ39"}],"awsn2":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("jcCUn") + "dog.b550a564.png" + "?" + Date.now();
+
 },{"./helpers/bundle-url":"lgJ39"}],"jFu21":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
@@ -36958,6 +36989,38 @@ class Cat extends _pixiJs.Sprite {
     }
     keepInScreen() {
         if (this.getBounds().right < this.game.pixi.screen.left) this.x = this.game.pixi.screen.right;
+    }
+}
+
+},{"pixi.js":"dsYej","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7mNrH":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Dog", ()=>Dog);
+var _pixiJs = require("pixi.js");
+class Dog extends _pixiJs.Sprite {
+    speed = 0;
+    constructor(texture, game){
+        super(texture);
+        this.game = game;
+        this.speed = Math.random() * 6 + 1;
+        this.x = Math.random() * game.pixi.screen.right;
+        this.y = Math.random() * game.pixi.screen.bottom;
+        this.tint = Math.random() * 0xffffff;
+        this.scale.set(-1, 1);
+        this.interactive = true;
+        this.on("pointerdown", ()=>this.onClick());
+    }
+    onClick() {
+        console.log("Click");
+        this.game.pixi.stage.removeChild(this);
+    }
+    update(delta) {
+        this.x += this.speed * delta;
+        this.y += Math.sin(this.x * 0.02) * 2;
+        this.keepInScreen();
+    }
+    keepInScreen() {
+        if (this.getBounds().left > this.game.pixi.screen.right) this.x = -this.getBounds().width;
     }
 }
 
