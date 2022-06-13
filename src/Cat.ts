@@ -16,7 +16,7 @@ export class Cat extends PIXI.Sprite {
     window.addEventListener("keyup", (e: KeyboardEvent) => this.onKeyUp(e));
   }
 
-  onKeyDown(e: KeyboardEvent): any {
+  private onKeyDown(e: KeyboardEvent): any {
     if (e.key === "ArrowUp") {
       this.speed = -5;
     }
@@ -24,7 +24,7 @@ export class Cat extends PIXI.Sprite {
       this.speed = 5;
     }
   }
-  onKeyUp(e: KeyboardEvent): any {
+  private onKeyUp(e: KeyboardEvent): any {
     if (e.key === "ArrowUp" || e.key === "ArrowDown") {
       this.speed = 0;
     }

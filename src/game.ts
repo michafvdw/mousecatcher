@@ -8,11 +8,11 @@ import { Cat } from "./Cat";
 import { Dog } from "./Dog";
 
 export class Game {
-  pixi: PIXI.Application;
-  mice: Mouse[] = [];
-  loader: PIXI.Loader;
-  cat: Cat;
-  dogs: Dog[] = [];
+  public pixi: PIXI.Application;
+  private mice: Mouse[] = [];
+  private loader: PIXI.Loader;
+  private cat: Cat;
+  private dogs: Dog[] = [];
   constructor() {
     console.log("Game !");
     //
@@ -39,7 +39,7 @@ export class Game {
   //
   // STAP 3 - maak een sprite als de afbeeldingen zijn geladen
   //
-  loadCompleted() {
+  private loadCompleted() {
     // first load background
     let background = new PIXI.Sprite(
       this.loader.resources["backgroundTexture"].texture!
@@ -75,7 +75,7 @@ export class Game {
 
     this.pixi.ticker.add((delta: number) => this.update(delta));
   }
-  update(delta: number) {
+  public update(delta: number) {
     this.cat.update();
  
 
@@ -128,7 +128,7 @@ export class Game {
 
   
 
-  collision(sprite1: PIXI.Sprite, sprite2: PIXI.Sprite) {
+  private collision(sprite1: PIXI.Sprite, sprite2: PIXI.Sprite) {
     const bounds1 = sprite1.getBounds();
     const bounds2 = sprite2.getBounds();
 

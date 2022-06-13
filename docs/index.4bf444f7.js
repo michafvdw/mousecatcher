@@ -507,7 +507,7 @@ function hmrAcceptRun(bundle, id) {
 var _game = require("./Game");
 new (0, _game.Game)();
 
-},{"./Game":"TyEjs"}],"TyEjs":[function(require,module,exports) {
+},{"./Game":"edeGs"}],"edeGs":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Game", ()=>Game);
