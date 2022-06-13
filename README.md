@@ -11,5 +11,7 @@
 ### Optioneel
 
 1.Meerdere levels 
+
 2.Score bijhouden 
+
 3.Difficulty increasen 
