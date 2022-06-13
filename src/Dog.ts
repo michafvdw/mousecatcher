@@ -1,12 +1,13 @@
 import * as PIXI from "pixi.js";
+import { Enemy } from "./enemy"
 import { Game } from "./Game";
 
-export class Dog extends PIXI.Sprite {
-  private game: Game;
-  private speed: number = 0;
+export class Dog extends Enemy {
+  //private game: Game;
+  //private speed: number = 0;
 
   constructor(texture: PIXI.Texture, game: Game) {
-    super(texture);
+    super(texture, game);
     this.game = game;
 
     this.speed = Math.random() * 6 + 1;
@@ -20,10 +21,11 @@ export class Dog extends PIXI.Sprite {
     this.on("pointerdown", () => this.onClick());
   }
 
+  /*
   private onClick() {
     console.log("Click");
     this.game.pixi.stage.removeChild(this);
-  }
+  }*/
 
   public update(delta: number) {
     this.x += this.speed * delta;
@@ -31,10 +33,10 @@ export class Dog extends PIXI.Sprite {
 
     this.keepInScreen();
   }
-
+/*
   private keepInScreen() {
     if (this.getBounds().left > this.game.pixi.screen.right) {
       this.x = -this.getBounds().width;
     }
-  }
+  }*/
 }

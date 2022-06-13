@@ -4,6 +4,7 @@ import backgroundImage from "./images/background.jpg";
 import catImage from "./images/cat.png";
 import dogImage from "./images/dog.png";
 import { Mouse } from "./Mouse";
+import { Enemy } from "./enemy";
 import { Cat } from "./Cat";
 import { Dog } from "./Dog";
 
@@ -12,6 +13,7 @@ export class Game {
   private mice: Mouse[] = [];
   private loader: PIXI.Loader;
   private cat: Cat;
+  private enemy: Enemy;
   private dogs: Dog[] = [];
   constructor() {
     console.log("Game !");
