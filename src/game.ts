@@ -109,6 +109,10 @@ export class Game {
       text.x = this.pixi.screen.width / 2;
       text.y = this.pixi.screen.height / 2;
       this.pixi.stage.addChild(text);
+      for (const dog of this.dogs) {
+        dog.update(delta);
+          this.pixi.stage.removeChild(dog);
+        }
     }
 
     // when the Cat is the only survivor
@@ -123,6 +127,11 @@ export class Game {
       text.x = this.pixi.screen.width / 2;
       text.y = this.pixi.screen.height / 2;
       this.pixi.stage.addChild(text);
+      for (const dog of this.dogs) {
+        dog.update(delta);
+          this.pixi.stage.removeChild(dog);
+        }
+  
     }
   }
 

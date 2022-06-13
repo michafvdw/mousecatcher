@@ -592,6 +592,10 @@ class Game {
             text.x = this.pixi.screen.width / 2;
             text.y = this.pixi.screen.height / 2;
             this.pixi.stage.addChild(text);
+            for (const dog of this.dogs){
+                dog.update(delta);
+                this.pixi.stage.removeChild(dog);
+            }
         }
         // when the Cat is the only survivor
         if (this.pixi.stage.children.filter((object)=>object instanceof (0, _dog.Dog)).length === 1 && this.pixi.stage.children.filter((object)=>object instanceof (0, _cat.Cat)).length === 0) {
@@ -604,6 +608,10 @@ class Game {
             text.x = this.pixi.screen.width / 2;
             text.y = this.pixi.screen.height / 2;
             this.pixi.stage.addChild(text);
+            for (const dog of this.dogs){
+                dog.update(delta);
+                this.pixi.stage.removeChild(dog);
+            }
         }
     }
     collision(sprite1, sprite2) {
