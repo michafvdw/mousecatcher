@@ -6,6 +6,3 @@
 
 3.Inheritence toevoegen 
 
-4.Sprites kleiner maken
-
-5.Peerreview
