@@ -13,13 +13,13 @@ export class Game {
   private mice: Mouse[] = [];
   private loader: PIXI.Loader;
   private cat: Cat;
+  //gebruik deze class nog niet in code
   private enemy: Enemy;
   private dogs: Dog[] = [];
   constructor() {
     console.log("Game !");
-    //
-    // STAP 1 - maak een pixi canvas
-    //
+    
+    //maak een pixi canvas
     this.pixi = new PIXI.Application({
       width: window.innerWidth,
       height: window.innerHeight,
@@ -27,9 +27,7 @@ export class Game {
     });
     document.body.appendChild(this.pixi.view);
 
-    //
-    // STAP 2 - preload alle afbeeldingen
-    //
+    //preload alle afbeeldingen
     this.loader = new PIXI.Loader();
     this.loader
       .add("mouseTexture",mouseImage)
@@ -38,9 +36,7 @@ export class Game {
       .add("catTexture", catImage);
     this.loader.load(() => this.loadCompleted());
   }
-  //
-  // STAP 3 - maak een sprite als de afbeeldingen zijn geladen
-  //
+  
   private loadCompleted() {
     // first load background
     let background = new PIXI.Sprite(
@@ -54,16 +50,16 @@ export class Game {
 
     // create mice
     for (let i = 0; i < 10; i++) {
-      let mouse = new Mouse(this.loader.resources["mouseTexture"].texture!, this);
-      this.mice.push(mouse);
-      this.pixi.stage.addChild(mouse);
+      let enemy = new Mouse(this.loader.resources["mouseTexture"].texture!, this);
+      this.mice.push(enemy);
+      this.pixi.stage.addChild(enemy);
     }
 
     // create mice
     for (let i = 0; i < 1; i++) {
-      let dog = new Dog(this.loader.resources["dogTexture"].texture!, this);
-      this.dogs.push(dog);
-      this.pixi.stage.addChild(dog);
+      let enemy = new Dog(this.loader.resources["dogTexture"].texture!, this);
+      this.dogs.push(enemy);
+      this.pixi.stage.addChild(enemy);
     }
 
     
@@ -117,7 +113,7 @@ export class Game {
         }
     }
 
-    // when the Cat is the only survivor
+    // when the Dog is the only survivor
     if (
       this.pixi.stage.children.filter((object) => object instanceof Dog)
         .length === 1 &&

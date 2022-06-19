@@ -528,25 +528,18 @@ class Game {
     dogs = [];
     constructor(){
         console.log("Game !");
-        //
-        // STAP 1 - maak een pixi canvas
-        //
+        //maak een pixi canvas
         this.pixi = new _pixiJs.Application({
             width: window.innerWidth,
             height: window.innerHeight,
             forceCanvas: true
         });
         document.body.appendChild(this.pixi.view);
-        //
-        // STAP 2 - preload alle afbeeldingen
-        //
+        //preload alle afbeeldingen
         this.loader = new _pixiJs.Loader();
         this.loader.add("mouseTexture", (0, _mousePngDefault.default)).add("dogTexture", (0, _dogPngDefault.default)).add("backgroundTexture", (0, _backgroundJpgDefault.default)).add("catTexture", (0, _catPngDefault.default));
         this.loader.load(()=>this.loadCompleted());
     }
-    //
-    // STAP 3 - maak een sprite als de afbeeldingen zijn geladen
-    //
     loadCompleted() {
         // first load background
         let background = new _pixiJs.Sprite(this.loader.resources["backgroundTexture"].texture);
@@ -554,15 +547,15 @@ class Game {
         this.pixi.stage.addChild(background);
         // create mice
         for(let i = 0; i < 10; i++){
-            let mouse = new (0, _mouse.Mouse)(this.loader.resources["mouseTexture"].texture, this);
-            this.mice.push(mouse);
-            this.pixi.stage.addChild(mouse);
+            let enemy = new (0, _mouse.Mouse)(this.loader.resources["mouseTexture"].texture, this);
+            this.mice.push(enemy);
+            this.pixi.stage.addChild(enemy);
         }
         // create mice
         for(let i1 = 0; i1 < 1; i1++){
-            let dog = new (0, _dog.Dog)(this.loader.resources["dogTexture"].texture, this);
-            this.dogs.push(dog);
-            this.pixi.stage.addChild(dog);
+            let enemy = new (0, _dog.Dog)(this.loader.resources["dogTexture"].texture, this);
+            this.dogs.push(enemy);
+            this.pixi.stage.addChild(enemy);
         }
         // create cat
         this.cat = new (0, _cat.Cat)(this.loader.resources["catTexture"].texture, this);
@@ -597,7 +590,7 @@ class Game {
                 this.pixi.stage.removeChild(dog);
             }
         }
-        // when the Cat is the only survivor
+        // when the Dog is the only survivor
         if (this.pixi.stage.children.filter((object)=>object instanceof (0, _dog.Dog)).length === 1 && this.pixi.stage.children.filter((object)=>object instanceof (0, _cat.Cat)).length === 0) {
             console.log("YOU LOSE");
             let text = new _pixiJs.Text("You LOSE!!", {
