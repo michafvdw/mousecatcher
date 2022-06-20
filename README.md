@@ -1,6 +1,10 @@
+# Github pages
+
+https://michafvdw.github.io/programmeren4_game/
+
 ## TO DO
 
-1.Werkend krijgen online zetten github pages: https://michafvdw.github.io/programmeren4_game/
+1.Linken naar prototypes
 
 2.Beginscherm toevoegen 
 
