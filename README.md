@@ -12,7 +12,7 @@ https://michafvdw.github.io/programmeren4_game/
 
 4.Klassendiagram maken 
 
-### Optioneel
+## Optioneel
 
 1.Meerdere levels 
 
@@ -20,7 +20,7 @@ https://michafvdw.github.io/programmeren4_game/
 
 3.Difficulty increasen 
 
-### Prototypes links 
+## Prototypes links 
 
 Prototype 1: https://github.com/michafvdw/prototype1_keyboardcontrol
 
@@ -28,4 +28,6 @@ Prototype 2:
 
 Prototype 3: 
 
-###  Uitleg spel 
+##  Uitleg spel 
+
+## Klassendiagram
