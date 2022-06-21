@@ -6,8 +6,6 @@ https://michafvdw.github.io/programmeren4_game/
 
 1.Linken naar prototypes
 
-2.Beginscherm toevoegen 
-
 3.Fixen van het scherm 
 
 4.Klassendiagram maken 
@@ -19,6 +17,8 @@ https://michafvdw.github.io/programmeren4_game/
 2.Score bijhouden 
 
 3.Difficulty increasen 
+
+4.Beginscherm toevoegen
 
 ## Prototypes links 
 
