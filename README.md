@@ -19,3 +19,13 @@ https://michafvdw.github.io/programmeren4_game/
 2.Score bijhouden 
 
 3.Difficulty increasen 
+
+### Prototypes links 
+
+Prototype 1: https://github.com/michafvdw/prototype1_keyboardcontrol
+
+Prototype 2: 
+
+Prototype 3: 
+
+###  Uitleg spel 
