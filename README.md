@@ -6,9 +6,7 @@ https://michafvdw.github.io/programmeren4_game/
 
 1.Linken naar prototypes
 
-3.Fixen van het scherm 
-
-4.Klassendiagram maken 
+2.Klassendiagram maken 
 
 ### Optioneel
 
