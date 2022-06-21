@@ -12,7 +12,7 @@ https://michafvdw.github.io/programmeren4_game/
 
 4.Klassendiagram maken 
 
-## Optioneel
+### Optioneel
 
 1.Meerdere levels 
 
