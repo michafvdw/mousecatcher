@@ -4,9 +4,11 @@ https://michafvdw.github.io/programmeren4_game/
 
 ## TO DO
 
-1.Linken naar prototypes
+1.Klassendiagram maken 
 
-2.Klassendiagram maken 
+2.Prototype 3 verwerken in game 
+
+3.Reflectie
 
 
 ## Prototypes links 
