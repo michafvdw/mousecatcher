@@ -22,7 +22,7 @@ https://michafvdw.github.io/programmeren4_game/
 
 Prototype 1: https://github.com/michafvdw/prototype1_keyboardcontrol
 
-Prototype 2: 
+Prototype 2: https://github.com/michafvdw/prototype2_collisions
 
 Prototype 3: https://github.com/michafvdw/prototype3_scoreUI
 
