@@ -24,7 +24,7 @@ Prototype 1: https://github.com/michafvdw/prototype1_keyboardcontrol
 
 Prototype 2: 
 
-Prototype 3: 
+Prototype 3: https://github.com/michafvdw/prototype3_scoreUI
 
 ##  Uitleg spel 
 
