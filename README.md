@@ -6,9 +6,7 @@ https://michafvdw.github.io/programmeren4_game/
 
 1.Klassendiagram maken 
 
-2.Prototype 3 verwerken in game 
-
-3.Reflectie
+2.Reflectie
 
 
 ## Prototypes links 
