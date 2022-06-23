@@ -523,6 +523,8 @@ var _dogPngDefault = parcelHelpers.interopDefault(_dogPng);
 var _mouse = require("./Mouse");
 var _cat = require("./Cat");
 var _dog = require("./Dog");
+var _ui = require("./ui");
+let currentScore = 0;
 class Game {
     mice = [];
     dogs = [];
@@ -545,17 +547,21 @@ class Game {
         let background = new _pixiJs.Sprite(this.loader.resources["backgroundTexture"].texture);
         background.scale.set(window.innerWidth / background.getBounds().width, window.innerHeight / background.getBounds().height);
         this.pixi.stage.addChild(background);
+        // create ui 
+        this.interface = new (0, _ui.ui)();
+        this.pixi.stage.addChild(this.interface);
         // create mice
         for(let i = 0; i < 10; i++){
-            let enemy = new (0, _mouse.Mouse)(this.loader.resources["mouseTexture"].texture, this);
-            this.mice.push(enemy);
-            this.pixi.stage.addChild(enemy);
+            let mouse = new (0, _mouse.Mouse)(this.loader.resources["mouseTexture"].texture, this);
+            this.mice.push(mouse);
+            this.pixi.stage.addChild(mouse);
+            console.log((0, _mouse.Mouse).length);
         }
-        // create mice
+        // create dog
         for(let i1 = 0; i1 < 1; i1++){
-            let enemy = new (0, _dog.Dog)(this.loader.resources["dogTexture"].texture, this);
-            this.dogs.push(enemy);
-            this.pixi.stage.addChild(enemy);
+            let dog = new (0, _dog.Dog)(this.loader.resources["dogTexture"].texture, this);
+            this.dogs.push(dog);
+            this.pixi.stage.addChild(dog);
         }
         // create cat
         this.cat = new (0, _cat.Cat)(this.loader.resources["catTexture"].texture, this);
@@ -564,19 +570,32 @@ class Game {
     }
     update(delta) {
         this.cat.update();
+        this.interface.score = this.pixi.stage.children.filter((object)=>object instanceof (0, _mouse.Mouse)).length;
         for (const mouse of this.mice){
             mouse.update(delta);
-            if (this.collision(this.cat, mouse)) // console.log("CAT ATTACK!!!!");
-            this.pixi.stage.removeChild(mouse);
+            this.interface.score = 14;
+            if (this.collision(this.cat, mouse)) {
+                // console.log("CAT ATTACK!!!!");
+                this.pixi.stage.removeChild(mouse);
+                console.log(this.pixi.stage.children.filter((object)=>object instanceof (0, _mouse.Mouse)).length);
+            }
         }
         for (const dog of this.dogs){
             dog.update(delta);
             if (this.collision(this.cat, dog)) // console.log("CAT ATTACK!!!!");
             this.pixi.stage.removeChild(this.cat);
         }
+        //if cat is in game the score gets counted
+        if (this.pixi.stage.children.filter((object)=>object instanceof (0, _cat.Cat)).length === 1) {
+            //console.log("hallo")
+            currentScore = this.pixi.stage.children.filter((object)=>object instanceof (0, _mouse.Mouse)).length;
+            currentScore = currentScore + 4;
+            this.interface.addScore(currentScore);
+        }
         // when the Cat is the only survivor
         if (this.pixi.stage.children.filter((object)=>object instanceof (0, _mouse.Mouse)).length === 0 && this.pixi.stage.children.filter((object)=>object instanceof (0, _cat.Cat)).length === 1) {
             console.log("YOU WIN");
+            //console.log(Mouse.length);
             let text = new _pixiJs.Text("You WIN!!", {
                 fill: [
                     "#ffffff"
@@ -588,7 +607,16 @@ class Game {
             for (const dog of this.dogs){
                 dog.update(delta);
                 this.pixi.stage.removeChild(dog);
-            }
+            /*
+          // score opslaan
+          localStorage.setItem('lastscore', JSON.stringify(this.score))
+
+          // score ophalen en tonen in een pixi textfield
+          let lastScore = localStorage.getItem('lastscore')
+          // het kan zijn dat er nog nooit een score is opgeslagen
+          if(lastScore) {
+              this.lastScoreField.text = `Last score: ${JSON.parse(lastScore)}`
+          }*/ }
         }
         // when the Dog is the only survivor
         if (this.pixi.stage.children.filter((object)=>object instanceof (0, _dog.Dog)).length === 1 && this.pixi.stage.children.filter((object)=>object instanceof (0, _cat.Cat)).length === 0) {
@@ -604,9 +632,13 @@ class Game {
             for (const dog of this.dogs){
                 dog.update(delta);
                 this.pixi.stage.removeChild(dog);
+                for (const mouse of this.mice)this.pixi.stage.removeChild(mouse);
+                this.pixi.stage.removeChild(this.cat);
+            //this.interface.addScore(currentScore);
             }
         }
     }
+    //collisions 
     collision(sprite1, sprite2) {
         const bounds1 = sprite1.getBounds();
         const bounds2 = sprite2.getBounds();
@@ -614,7 +646,7 @@ class Game {
     }
 }
 
-},{"pixi.js":"dsYej","./images/mouse.png":"57yax","./images/background.jpg":"kLq7u","./images/cat.png":"hNhHq","./images/dog.png":"awsn2","./Mouse":"jFu21","./Cat":"ijiA1","./Dog":"7mNrH","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"dsYej":[function(require,module,exports) {
+},{"pixi.js":"dsYej","./images/mouse.png":"57yax","./images/cat.png":"hNhHq","./images/dog.png":"awsn2","./Mouse":"jFu21","./Cat":"ijiA1","./Dog":"7mNrH","./ui":"iGTI0","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./images/background.jpg":"kLq7u"}],"dsYej":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "utils", ()=>_utils);
@@ -36918,10 +36950,7 @@ exports.getBundleURL = getBundleURLCached;
 exports.getBaseURL = getBaseURL;
 exports.getOrigin = getOrigin;
 
-},{}],"kLq7u":[function(require,module,exports) {
-module.exports = require("./helpers/bundle-url").getBundleURL("jcCUn") + "background.527e578f.jpg" + "?" + Date.now();
-
-},{"./helpers/bundle-url":"lgJ39"}],"hNhHq":[function(require,module,exports) {
+},{}],"hNhHq":[function(require,module,exports) {
 module.exports = require("./helpers/bundle-url").getBundleURL("jcCUn") + "cat.3425c517.png" + "?" + Date.now();
 
 },{"./helpers/bundle-url":"lgJ39"}],"awsn2":[function(require,module,exports) {
@@ -37042,6 +37071,38 @@ class Dog extends (0, _enemy.Enemy) {
     }
 }
 
-},{"./enemy":"e8Rej","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["lktt9","h7u1C"], "h7u1C", "parcelRequirea0e5")
+},{"./enemy":"e8Rej","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"iGTI0":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "ui", ()=>ui);
+var _pixiJs = require("pixi.js");
+class ui extends _pixiJs.Container {
+    score = 0;
+    constructor(game){
+        super();
+        this.game = game;
+        const style = new _pixiJs.TextStyle({
+            fontFamily: "ArcadeFont",
+            fontSize: 40,
+            fontWeight: "bold",
+            fill: [
+                "#ffffff"
+            ]
+        });
+        this.scoreField = new _pixiJs.Text(`Score : 0`, style);
+        this.addChild(this.scoreField);
+        this.scoreField.x = 10;
+        this.scoreField.y = 10;
+    }
+    addScore(n) {
+        this.score -= n;
+        this.scoreField.text = `Score : ${this.score}`;
+    }
+}
+
+},{"pixi.js":"dsYej","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"kLq7u":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("jcCUn") + "background.527e578f.jpg" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}]},["lktt9","h7u1C"], "h7u1C", "parcelRequirea0e5")
 
 //# sourceMappingURL=index.4bf444f7.js.map
