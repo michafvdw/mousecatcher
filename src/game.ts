@@ -4,20 +4,22 @@ import backgroundImage from "./images/background.jpg";
 import catImage from "./images/cat.png";
 import dogImage from "./images/dog.png";
 import { Mouse } from "./Mouse";
+import { Enemy } from "./enemy";
 import { Cat } from "./Cat";
 import { Dog } from "./Dog";
 
 export class Game {
-  pixi: PIXI.Application;
-  mice: Mouse[] = [];
-  loader: PIXI.Loader;
-  cat: Cat;
-  dogs: Dog[] = [];
+  public pixi: PIXI.Application;
+  private mice: Mouse[] = [];
+  private loader: PIXI.Loader;
+  private cat: Cat;
+  //gebruik deze class nog niet in code
+  private enemy: Enemy;
+  private dogs: Dog[] = [];
   constructor() {
     console.log("Game !");
-    //
-    // STAP 1 - maak een pixi canvas
-    //
+    
+    //maak een pixi canvas
     this.pixi = new PIXI.Application({
       width: window.innerWidth,
       height: window.innerHeight,
@@ -25,9 +27,7 @@ export class Game {
     });
     document.body.appendChild(this.pixi.view);
 
-    //
-    // STAP 2 - preload alle afbeeldingen
-    //
+    //preload alle afbeeldingen
     this.loader = new PIXI.Loader();
     this.loader
       .add("mouseTexture",mouseImage)
@@ -36,10 +36,8 @@ export class Game {
       .add("catTexture", catImage);
     this.loader.load(() => this.loadCompleted());
   }
-  //
-  // STAP 3 - maak een sprite als de afbeeldingen zijn geladen
-  //
-  loadCompleted() {
+  
+  private loadCompleted() {
     // first load background
     let background = new PIXI.Sprite(
       this.loader.resources["backgroundTexture"].texture!
@@ -52,16 +50,16 @@ export class Game {
 
     // create mice
     for (let i = 0; i < 10; i++) {
-      let mouse = new Mouse(this.loader.resources["mouseTexture"].texture!, this);
-      this.mice.push(mouse);
-      this.pixi.stage.addChild(mouse);
+      let enemy = new Mouse(this.loader.resources["mouseTexture"].texture!, this);
+      this.mice.push(enemy);
+      this.pixi.stage.addChild(enemy);
     }
 
     // create mice
     for (let i = 0; i < 1; i++) {
-      let dog = new Dog(this.loader.resources["dogTexture"].texture!, this);
-      this.dogs.push(dog);
-      this.pixi.stage.addChild(dog);
+      let enemy = new Dog(this.loader.resources["dogTexture"].texture!, this);
+      this.dogs.push(enemy);
+      this.pixi.stage.addChild(enemy);
     }
 
     
@@ -75,7 +73,7 @@ export class Game {
 
     this.pixi.ticker.add((delta: number) => this.update(delta));
   }
-  update(delta: number) {
+  public update(delta: number) {
     this.cat.update();
  
 
@@ -109,9 +107,13 @@ export class Game {
       text.x = this.pixi.screen.width / 2;
       text.y = this.pixi.screen.height / 2;
       this.pixi.stage.addChild(text);
+      for (const dog of this.dogs) {
+        dog.update(delta);
+          this.pixi.stage.removeChild(dog);
+        }
     }
 
-    // when the Cat is the only survivor
+    // when the Dog is the only survivor
     if (
       this.pixi.stage.children.filter((object) => object instanceof Dog)
         .length === 1 &&
@@ -123,12 +125,17 @@ export class Game {
       text.x = this.pixi.screen.width / 2;
       text.y = this.pixi.screen.height / 2;
       this.pixi.stage.addChild(text);
+      for (const dog of this.dogs) {
+        dog.update(delta);
+          this.pixi.stage.removeChild(dog);
+        }
+  
     }
   }
 
   
 
-  collision(sprite1: PIXI.Sprite, sprite2: PIXI.Sprite) {
+  private collision(sprite1: PIXI.Sprite, sprite2: PIXI.Sprite) {
     const bounds1 = sprite1.getBounds();
     const bounds2 = sprite2.getBounds();
 

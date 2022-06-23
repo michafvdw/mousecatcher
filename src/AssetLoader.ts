@@ -11,8 +11,8 @@ import bgImage from "./images/background.jpg"
 
 export class AssetLoader extends PIXI.Loader {
 
-    graphics:PIXI.Graphics
-    game:Game
+    private graphics:PIXI.Graphics
+    private game:Game
 
     constructor(game:Game) {
         super()
@@ -34,7 +34,7 @@ export class AssetLoader extends PIXI.Loader {
         this.onError.add((arg) => { console.error(arg) })
         this.load(() => {
             this.graphics.destroy()
-            game.doneLoading()
+            //this.game.doneLoading()
         })
     }
 

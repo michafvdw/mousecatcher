@@ -507,7 +507,7 @@ function hmrAcceptRun(bundle, id) {
 var _game = require("./Game");
 new (0, _game.Game)();
 
-},{"./Game":"TyEjs"}],"TyEjs":[function(require,module,exports) {
+},{"./Game":"edeGs"}],"edeGs":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Game", ()=>Game);
@@ -528,25 +528,18 @@ class Game {
     dogs = [];
     constructor(){
         console.log("Game !");
-        //
-        // STAP 1 - maak een pixi canvas
-        //
+        //maak een pixi canvas
         this.pixi = new _pixiJs.Application({
             width: window.innerWidth,
             height: window.innerHeight,
             forceCanvas: true
         });
         document.body.appendChild(this.pixi.view);
-        //
-        // STAP 2 - preload alle afbeeldingen
-        //
+        //preload alle afbeeldingen
         this.loader = new _pixiJs.Loader();
         this.loader.add("mouseTexture", (0, _mousePngDefault.default)).add("dogTexture", (0, _dogPngDefault.default)).add("backgroundTexture", (0, _backgroundJpgDefault.default)).add("catTexture", (0, _catPngDefault.default));
         this.loader.load(()=>this.loadCompleted());
     }
-    //
-    // STAP 3 - maak een sprite als de afbeeldingen zijn geladen
-    //
     loadCompleted() {
         // first load background
         let background = new _pixiJs.Sprite(this.loader.resources["backgroundTexture"].texture);
@@ -554,15 +547,15 @@ class Game {
         this.pixi.stage.addChild(background);
         // create mice
         for(let i = 0; i < 10; i++){
-            let mouse = new (0, _mouse.Mouse)(this.loader.resources["mouseTexture"].texture, this);
-            this.mice.push(mouse);
-            this.pixi.stage.addChild(mouse);
+            let enemy = new (0, _mouse.Mouse)(this.loader.resources["mouseTexture"].texture, this);
+            this.mice.push(enemy);
+            this.pixi.stage.addChild(enemy);
         }
         // create mice
         for(let i1 = 0; i1 < 1; i1++){
-            let dog = new (0, _dog.Dog)(this.loader.resources["dogTexture"].texture, this);
-            this.dogs.push(dog);
-            this.pixi.stage.addChild(dog);
+            let enemy = new (0, _dog.Dog)(this.loader.resources["dogTexture"].texture, this);
+            this.dogs.push(enemy);
+            this.pixi.stage.addChild(enemy);
         }
         // create cat
         this.cat = new (0, _cat.Cat)(this.loader.resources["catTexture"].texture, this);
@@ -592,8 +585,12 @@ class Game {
             text.x = this.pixi.screen.width / 2;
             text.y = this.pixi.screen.height / 2;
             this.pixi.stage.addChild(text);
+            for (const dog of this.dogs){
+                dog.update(delta);
+                this.pixi.stage.removeChild(dog);
+            }
         }
-        // when the Cat is the only survivor
+        // when the Dog is the only survivor
         if (this.pixi.stage.children.filter((object)=>object instanceof (0, _dog.Dog)).length === 1 && this.pixi.stage.children.filter((object)=>object instanceof (0, _cat.Cat)).length === 0) {
             console.log("YOU LOSE");
             let text = new _pixiJs.Text("You LOSE!!", {
@@ -604,6 +601,10 @@ class Game {
             text.x = this.pixi.screen.width / 2;
             text.y = this.pixi.screen.height / 2;
             this.pixi.stage.addChild(text);
+            for (const dog of this.dogs){
+                dog.update(delta);
+                this.pixi.stage.removeChild(dog);
+            }
         }
     }
     collision(sprite1, sprite2) {
@@ -36930,11 +36931,12 @@ module.exports = require("./helpers/bundle-url").getBundleURL("jcCUn") + "dog.b5
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Mouse", ()=>Mouse);
-var _pixiJs = require("pixi.js");
-class Mouse extends _pixiJs.Sprite {
-    speed = 0;
+var _enemy = require("./enemy");
+class Mouse extends (0, _enemy.Enemy) {
+    //private game: Game;
+    //private speed: number = 0;
     constructor(texture, game){
-        super(texture);
+        super(texture, game);
         this.game = game;
         this.speed = Math.random() * 6 + 1;
         this.x = Math.random() * game.pixi.screen.right;
@@ -36944,14 +36946,32 @@ class Mouse extends _pixiJs.Sprite {
         this.interactive = true;
         this.on("pointerdown", ()=>this.onClick());
     }
-    onClick() {
-        console.log("Click");
-        this.game.pixi.stage.removeChild(this);
-    }
-    update(delta) {
+    /*
+  private onClick() {
+    console.log("Click");
+    this.game.pixi.stage.removeChild(this);
+  }*/ update(delta) {
         this.x += this.speed * delta;
         this.y += Math.sin(this.x * 0.02) * 2;
         this.keepInScreen();
+    }
+}
+
+},{"./enemy":"e8Rej","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"e8Rej":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Enemy", ()=>Enemy);
+var _pixiJs = require("pixi.js");
+class Enemy extends _pixiJs.Sprite {
+    speed = 0;
+    constructor(texture, game){
+        super(texture);
+        //super(game)
+        this.game = game;
+    }
+    onClick() {
+        console.log("Click");
+        this.game.pixi.stage.removeChild(this);
     }
     keepInScreen() {
         if (this.getBounds().left > this.game.pixi.screen.right) this.x = -this.getBounds().width;
@@ -36996,11 +37016,12 @@ class Cat extends _pixiJs.Sprite {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Dog", ()=>Dog);
-var _pixiJs = require("pixi.js");
-class Dog extends _pixiJs.Sprite {
-    speed = 0;
+var _enemy = require("./enemy");
+class Dog extends (0, _enemy.Enemy) {
+    //private game: Game;
+    //private speed: number = 0;
     constructor(texture, game){
-        super(texture);
+        super(texture, game);
         this.game = game;
         this.speed = Math.random() * 6 + 1;
         this.x = Math.random() * game.pixi.screen.right;
@@ -37010,20 +37031,17 @@ class Dog extends _pixiJs.Sprite {
         this.interactive = true;
         this.on("pointerdown", ()=>this.onClick());
     }
-    onClick() {
-        console.log("Click");
-        this.game.pixi.stage.removeChild(this);
-    }
-    update(delta) {
+    /*
+  private onClick() {
+    console.log("Click");
+    this.game.pixi.stage.removeChild(this);
+  }*/ update(delta) {
         this.x += this.speed * delta;
         this.y += Math.sin(this.x * 0.02) * 2;
         this.keepInScreen();
     }
-    keepInScreen() {
-        if (this.getBounds().left > this.game.pixi.screen.right) this.x = -this.getBounds().width;
-    }
 }
 
-},{"pixi.js":"dsYej","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["lktt9","h7u1C"], "h7u1C", "parcelRequirea0e5")
+},{"./enemy":"e8Rej","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["lktt9","h7u1C"], "h7u1C", "parcelRequirea0e5")
 
 //# sourceMappingURL=index.4bf444f7.js.map
