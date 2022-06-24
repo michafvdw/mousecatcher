@@ -1,5 +1,5 @@
 # mousecatcher
-Deze readme file bevat uitleg over de eindgame die is gemaakt voor het vak programmeren 4, de game heet Mouse Catcher. De progressie die is gedaan is terug te zien in de commits in deze repository (voor dit vak heb ik met Github Desktop gewerkt om alles bij te houden). Er is wat raars gebeurt bij de laatste commit (ik denk omdat ik de naam van programmeren4_game naar mousecatcher heb veranderd) waardoor alle mappen er nu dubbel instaan maar in principe is de code in de src mappen 1 en 2 hetzelfde. In de laatste commit heb ik alleen fonts gewijzigd dus dat is het enige wat misschien afwijkt. De github pages linkt werkt ook gewoon en anders staat er voor de zekerheid nog een youtube video bij. 
+Deze readme file bevat uitleg over de eindgame die is gemaakt voor het vak programmeren 4, de game heet Mouse Catcher. De progressie die is gedaan is terug te zien in de commits in deze repository (voor dit vak heb ik met Github Desktop gewerkt om alles bij te houden). 
 
 ## Github pages
 https://michafvdw.github.io/mousecatcher/
