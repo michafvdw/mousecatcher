@@ -132,7 +132,7 @@ export class Game {
     ) {
       console.log("YOU WIN");
       //console.log(Mouse.length);
-      let text = new PIXI.Text("You WIN!!", { fill: ["#ffffff"] });
+      let text = new PIXI.Text("Je hebt gewonnen :)", { fill: ["#ffffff"], fontWeight: 'bold' });
       text.x = this.pixi.screen.width / 2;
       text.y = this.pixi.screen.height / 2;
       this.pixi.stage.addChild(text);
@@ -140,15 +140,6 @@ export class Game {
         dog.update(delta);
           this.pixi.stage.removeChild(dog);
           
-          /*
-          // score opslaan
-          localStorage.setItem('lastscore', JSON.stringify(this.score))
-          // score ophalen en tonen in een pixi textfield
-          let lastScore = localStorage.getItem('lastscore')
-          // het kan zijn dat er nog nooit een score is opgeslagen
-          if(lastScore) {
-              this.lastScoreField.text = `Last score: ${JSON.parse(lastScore)}`
-          }*/
         }
     }
     
@@ -164,7 +155,7 @@ export class Game {
     ) {
 
       console.log("YOU LOSE");
-      let text = new PIXI.Text("You LOSE!!", { fill: ["#ffffff"] });
+      let text = new PIXI.Text("Je hebt verloren :(", { fill: ["#ffffff"], fontWeight: 'bold' });
       text.x = this.pixi.screen.width / 2;
       text.y = this.pixi.screen.height / 2;
       this.pixi.stage.addChild(text);

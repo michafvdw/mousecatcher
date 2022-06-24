@@ -12,8 +12,8 @@ export class ui extends PIXI.Container {
         super();
         this.game = game;
         const style = new PIXI.TextStyle({
-            fontFamily: 'ArcadeFont',
-            fontSize: 40,
+            fontFamily: 'Roboto',
+            fontSize: 50,
             fontWeight: 'bold',
             fill: ['#ffffff']
         })

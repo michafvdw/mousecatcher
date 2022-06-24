@@ -596,10 +596,11 @@ class Game {
         if (this.pixi.stage.children.filter((object)=>object instanceof (0, _mouse.Mouse)).length === 0 && this.pixi.stage.children.filter((object)=>object instanceof (0, _cat.Cat)).length === 1) {
             console.log("YOU WIN");
             //console.log(Mouse.length);
-            let text = new _pixiJs.Text("You WIN!!", {
+            let text = new _pixiJs.Text("Je hebt gewonnen :)", {
                 fill: [
                     "#ffffff"
-                ]
+                ],
+                fontWeight: "bold"
             });
             text.x = this.pixi.screen.width / 2;
             text.y = this.pixi.screen.height / 2;
@@ -607,23 +608,16 @@ class Game {
             for (const dog of this.dogs){
                 dog.update(delta);
                 this.pixi.stage.removeChild(dog);
-            /*
-          // score opslaan
-          localStorage.setItem('lastscore', JSON.stringify(this.score))
-          // score ophalen en tonen in een pixi textfield
-          let lastScore = localStorage.getItem('lastscore')
-          // het kan zijn dat er nog nooit een score is opgeslagen
-          if(lastScore) {
-              this.lastScoreField.text = `Last score: ${JSON.parse(lastScore)}`
-          }*/ }
+            }
         }
         // when the Dog is the only survivor
         if (this.pixi.stage.children.filter((object)=>object instanceof (0, _dog.Dog)).length === 1 && this.pixi.stage.children.filter((object)=>object instanceof (0, _cat.Cat)).length === 0) {
             console.log("YOU LOSE");
-            let text = new _pixiJs.Text("You LOSE!!", {
+            let text = new _pixiJs.Text("Je hebt verloren :(", {
                 fill: [
                     "#ffffff"
-                ]
+                ],
+                fontWeight: "bold"
             });
             text.x = this.pixi.screen.width / 2;
             text.y = this.pixi.screen.height / 2;
@@ -36962,11 +36956,12 @@ module.exports = require("./helpers/bundle-url").getBundleURL("jcCUn") + "dog.b5
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Mouse", ()=>Mouse);
-var _pixiJs = require("pixi.js");
-class Mouse extends _pixiJs.Sprite {
-    speed = 0;
+var _enemy = require("./enemy");
+class Mouse extends (0, _enemy.Enemy) {
+    //private game: Game;
+    //private speed: number = 0;
     constructor(texture, game){
-        super(texture);
+        super(texture, game);
         this.game = game;
         this.speed = Math.random() * 6 + 1;
         this.x = Math.random() * game.pixi.screen.right;
@@ -36976,14 +36971,32 @@ class Mouse extends _pixiJs.Sprite {
         this.interactive = true;
         this.on("pointerdown", ()=>this.onClick());
     }
-    onClick() {
-        console.log("Click");
-        this.game.pixi.stage.removeChild(this);
-    }
-    update(delta) {
+    /*
+  private onClick() {
+    console.log("Click");
+    this.game.pixi.stage.removeChild(this);
+  }*/ update(delta) {
         this.x += this.speed * delta;
         this.y += Math.sin(this.x * 0.02) * 2;
         this.keepInScreen();
+    }
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./enemy":"e8Rej"}],"e8Rej":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Enemy", ()=>Enemy);
+var _pixiJs = require("pixi.js");
+class Enemy extends _pixiJs.Sprite {
+    speed = 0;
+    constructor(texture, game){
+        super(texture);
+        //super(game)
+        this.game = game;
+    }
+    onClick() {
+        console.log("Click");
+        this.game.pixi.stage.removeChild(this);
     }
     keepInScreen() {
         if (this.getBounds().left > this.game.pixi.screen.right) this.x = -this.getBounds().width;
@@ -37028,11 +37041,12 @@ class Cat extends _pixiJs.Sprite {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Dog", ()=>Dog);
-var _pixiJs = require("pixi.js");
-class Dog extends _pixiJs.Sprite {
-    speed = 0;
+var _enemy = require("./enemy");
+class Dog extends (0, _enemy.Enemy) {
+    //private game: Game;
+    //private speed: number = 0;
     constructor(texture, game){
-        super(texture);
+        super(texture, game);
         this.game = game;
         this.speed = Math.random() * 6 + 1;
         this.x = Math.random() * game.pixi.screen.right;
@@ -37042,21 +37056,18 @@ class Dog extends _pixiJs.Sprite {
         this.interactive = true;
         this.on("pointerdown", ()=>this.onClick());
     }
-    onClick() {
-        console.log("Click");
-        this.game.pixi.stage.removeChild(this);
-    }
-    update(delta) {
+    /*
+  private onClick() {
+    console.log("Click");
+    this.game.pixi.stage.removeChild(this);
+  }*/ update(delta) {
         this.x += this.speed * delta;
         this.y += Math.sin(this.x * 0.02) * 2;
         this.keepInScreen();
     }
-    keepInScreen() {
-        if (this.getBounds().left > this.game.pixi.screen.right) this.x = -this.getBounds().width;
-    }
 }
 
-},{"pixi.js":"dsYej","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"iGTI0":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./enemy":"e8Rej"}],"iGTI0":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "ui", ()=>ui);
@@ -37067,8 +37078,8 @@ class ui extends _pixiJs.Container {
         super();
         this.game = game;
         const style = new _pixiJs.TextStyle({
-            fontFamily: "ArcadeFont",
-            fontSize: 40,
+            fontFamily: "Roboto",
+            fontSize: 50,
             fontWeight: "bold",
             fill: [
                 "#ffffff"
