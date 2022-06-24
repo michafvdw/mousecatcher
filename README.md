@@ -23,4 +23,8 @@ Prototype 2: https://github.com/michafvdw/prototype2_collisions
 Prototype 3: https://github.com/michafvdw/prototype3_scoreUI
 
 ## Klassendiagram 
-![image description](src/images/UML-klasse.png)
+<img src="src/images/UML-klasse.png" width="800"/>
+Ik heb een klassendiagram gemaakt voor de game mousecatcher om inzichtelijker te maken hoe de game in elkaar zit. Ik heb deze gebaseerd op wat stond in de stappenplan-voorbeeld-breakout.pdf (te vinden op teams). Game heeft meerdere classes, dog, cat, mouse, ui en background en mouse en dog zijn allebei enemy (inheritence). Ook heb ik met de + en - aangegeven of de properties private of public zijn (encapsulation). Het diagram is gemaakt in Lucidchart. 
+
+## Suggesties voor verdere uitwerking 
+Mijn doel was om minstens een game werkend te hebben die de score ook kan bijhouden, dit is me gelukt. Voor een verdere uitbreiding zou ik ook levels willen toevoegen die steeds moeilijker worden voor de speler (bijvoorbeeld meer muizen of meer honden, of een hond met een hogere speed).
