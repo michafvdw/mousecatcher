@@ -23,4 +23,4 @@ Prototype 2: https://github.com/michafvdw/prototype2_collisions
 Prototype 3: https://github.com/michafvdw/prototype3_scoreUI
 
 ## Klassendiagram 
-![image description](src/images/UML-klasse.jpeg)
+![image description](src/images/UML-klasse.png)
